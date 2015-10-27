@@ -15,7 +15,7 @@ func h(tetha: [Double])(_ x: [Double]) -> Double {
 }
 
 // Dataset is organized: x0, x1, x2, ..., xn, y
-func j(dataset: [[Double]])(tetha: [Double]) -> Double {
+func j(dataset: [[Double]])(_ tetha: [Double]) -> Double {
     
     let thesum: [Double] -> Double = {
         sample in
@@ -62,8 +62,14 @@ func gradientDescent(alpha: Double)(_ dataset: [[Double]]) -> [Double] {
             return tetha - alpha * (1.0/Double(dataset.count)) * dataset.mapSum(thesum(o, i))
         }
         
-        let remaining = Array(zip(o, newo)).map(distanceDouble).filter { $0 > 0.00001}
-        guard remaining.count > 0 else { break }
+        
+        let fd = j(dataset)
+        let d = distanceDouble(fd(o), fd(newo))
+        
+        if d < 0.00001 {
+            break
+        }
+        
         o = newo
     }
     
@@ -71,5 +77,4 @@ func gradientDescent(alpha: Double)(_ dataset: [[Double]]) -> [Double] {
     
 }
 
-gradientDescent(0.05)([[1, 0, 0], [1, 2, 7]])
-
+gradientDescent(0.05)([[1, 0, 0, 3], [1, 2, 7, 12]])
